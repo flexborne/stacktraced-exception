@@ -1,0 +1,17 @@
+# ninja log v5
+19	716	7209064195771067	Detours-main/CMakeFiles/detours.dir/src/disolarm64.cpp.obj	c2e141315b82d639
+23	734	7209064195943409	Detours-main/CMakeFiles/detours.dir/src/disolia64.cpp.obj	1d34c08cfd592225
+12	752	7209064196124844	Detours-main/CMakeFiles/detours.dir/src/disasm.cpp.obj	588b9a84bb476742
+15	764	7209064196189991	Detours-main/CMakeFiles/detours.dir/src/disolarm.cpp.obj	e5fdcca8df5697c6
+9	767	7209064196276096	Detours-main/CMakeFiles/detours.dir/src/creatwth.cpp.obj	3162b010ddde029c
+34	777	7209064196341610	Detours-main/CMakeFiles/detours.dir/src/modules.cpp.obj	596d804940b77c0b
+38	778	7209064196401681	Detours-main/CMakeFiles/detours.dir/src/image.cpp.obj	d32a9c24e585ebc4
+6	787	7209064196482194	Detours-main/CMakeFiles/detours.dir/src/detours.cpp.obj	813d9b2f7971d53f
+27	799	7209064196617829	Detours-main/CMakeFiles/detours.dir/src/disolx64.cpp.obj	5313630fe451060f
+30	808	7209064196715349	Detours-main/CMakeFiles/detours.dir/src/disolx86.cpp.obj	d368fc97a3498a49
+809	861	7209064197136299	Detours-main/libdetours.a	fd6ce5cf8e3377c5
+3	1046	7209064199091905	CMakeFiles/exception.dir/main.cpp.obj	557acdaacba40e6e
+0	1464	7209064203235685	CMakeFiles/exception.dir/stacktraced_exception.cpp.obj	d538d798ba9e4eaa
+1464	1529	7209064203896607	exception.exe	37a5b5f984e56952
+5	1154	7209068942080110	CMakeFiles/exception.dir/stacktraced_exception.cpp.obj	d538d798ba9e4eaa
+1154	1226	7209068942801124	exception.exe	37a5b5f984e56952

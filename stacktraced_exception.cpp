@@ -7,12 +7,11 @@
 #include "Detours-main/src/detours.h"
 #include "stacktraced_exception.h"
 
-#define libc
 
-#ifdef libc
-std::string lib = "libc++.dll";
+#ifdef __GLIBCXX__
+const char* lib = "libstdc++-6.dll";
 #else
-std::string lib = "libstdc++-6.dll";
+const char* lib = "libc++.dll";
 #endif
 
 
@@ -80,11 +79,13 @@ namespace {
 
     // init
     auto _ = [] () -> int {
-        orig_cxa_allocate_exception = (cxa_allocate_exception_t)DetourFindFunction(lib.c_str(), "__cxa_allocate_exception");
-        orig_cxa_free_exception = (cxa_free_exception_t)DetourFindFunction(lib.c_str(), "__cxa_free_exception");
+        orig_cxa_allocate_exception = (cxa_allocate_exception_t)DetourFindFunction(lib, "__cxa_allocate_exception");
+        orig_cxa_free_exception = (cxa_free_exception_t)DetourFindFunction(lib, "__cxa_free_exception");
 
-        std::cout << "found alloc++:  " << (orig_cxa_allocate_exception != nullptr) << "\n";
-        std::cout << "found free++:  " << (orig_cxa_free_exception != nullptr) << "\n";
+        if (!orig_cxa_allocate_exception || !orig_cxa_free_exception) {
+            std::cerr << "Could not find library functions. Terminating";
+            std::terminate();
+        }
 
         DetourTransactionBegin();
         DetourUpdateThread(GetCurrentThread());

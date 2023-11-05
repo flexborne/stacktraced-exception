@@ -1,0 +1,6 @@
+C:/Users/Alexander/Downloads/folder/stacktraced-exception/cmake-build-debug/CMakeFiles/exception.dir
+C:/Users/Alexander/Downloads/folder/stacktraced-exception/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Alexander/Downloads/folder/stacktraced-exception/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Alexander/Downloads/folder/stacktraced-exception/cmake-build-debug/Detours-main/CMakeFiles/detours.dir
+C:/Users/Alexander/Downloads/folder/stacktraced-exception/cmake-build-debug/Detours-main/CMakeFiles/edit_cache.dir
+C:/Users/Alexander/Downloads/folder/stacktraced-exception/cmake-build-debug/Detours-main/CMakeFiles/rebuild_cache.dir

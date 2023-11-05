@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_executable(exception main.cpp
         stacktraced_exception.cpp
-        get_current_exception.h)
+        stacktraced_exception.h)
 
 find_package(Boost REQUIRED COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})

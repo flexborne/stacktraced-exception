@@ -5,7 +5,7 @@
 #include <boost/stacktrace.hpp>
 #include <iostream>
 #include "Detours-main/src/detours.h"
-#include "get_current_exception.h"
+#include "stacktraced_exception.h"
 
 #define libc
 
@@ -24,6 +24,8 @@ namespace {
     std::unordered_map<void*, const char*> stacktrace_dump_by_exc;
     std::mutex mutex;
 
+    thread_local bool wantStacktracing = false;
+
     using cxa_allocate_exception_t =  void* (*)(size_t);
     using cxa_free_exception_t = void (*)(void*);
 
@@ -31,6 +33,9 @@ namespace {
     constinit cxa_free_exception_t orig_cxa_free_exception = nullptr;
 
     void* allocate_exception_with_stacktrace(size_t thrown_size) throw() {
+        if (!wantStacktracing) {
+            return orig_cxa_allocate_exception(thrown_size);
+        }
         static thread_local bool already_in_allocate_exception = false;
         if (std::exchange(already_in_allocate_exception, true)) {  // 'bad alloc'
             std::terminate();
@@ -54,6 +59,9 @@ namespace {
 
     /// @todo not working with libc++ cause its inlined there
     void free_exception_with_stacktrace(void* thrown_object) throw() {
+        if (!wantStacktracing) {
+            return orig_cxa_free_exception(thrown_object);
+        }
         static thread_local bool already_in_free_exception = false;
         if (std::exchange(already_in_free_exception, true)) {
             std::terminate();
@@ -113,4 +121,8 @@ stacktrace exception::get_current_exception_stacktrace() {
     }
 
     return stacktrace::from_dump(stacktrace_dump_ptr, kStacktraceDumpSize);
+}
+
+void exception::capture_stacktraces_at_throw(bool wantStacktracingNew) {
+    wantStacktracing = wantStacktracingNew;
 }

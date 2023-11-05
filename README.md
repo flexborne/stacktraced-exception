@@ -16,5 +16,5 @@ Unfortunately, the ABI-changing method does not provide an overridden function c
 
 
 # Deps
-https://github.com/microsoft/Detours
-[boost/stacktrace](https://github.com/boostorg/stacktrace)https://github.com/boostorg/stacktrace
+1) https://github.com/microsoft/Detours
+2) [boost/stacktrace](https://github.com/boostorg/stacktrace)https://github.com/boostorg/stacktrace

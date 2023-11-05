@@ -62,7 +62,7 @@ namespace {
         orig_cxa_free_exception(thrown_object);
 
         {
-            std::lock_guard<std::mutex> lg{mutex};
+            std::lock_guard lg{mutex};
             stacktrace_dump_by_exc.erase(thrown_object);
         }
 

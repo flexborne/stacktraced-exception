@@ -98,8 +98,7 @@ namespace {
 
     __attribute__((always_inline)) void* get_current_exception_raw_ptr() {
         auto exc_ptr = std::current_exception();
-        void* exc_raw_ptr = *static_cast<void**>((void*)&exc_ptr);
-        return exc_raw_ptr;
+        return *static_cast<void**>((void*)&exc_ptr);
     }
 }
 

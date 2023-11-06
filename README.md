@@ -50,5 +50,5 @@ There are two functions:
 
 
 # Deps
-1) https://github.com/microsoft/Detours
+1) [https://github.com/microsoft/Detours](https://github.com/TsudaKageyu/minhook)
 2) [boost/stacktrace](https://github.com/boostorg/stacktrace)https://github.com/boostorg/stacktrace

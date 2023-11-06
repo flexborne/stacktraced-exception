@@ -5,6 +5,7 @@
 #include "stacktraced_exception.h"
 
 void throwable() {
+    throw std::runtime_error("err");
     std::unordered_map<int, int> a;
     a.at(10);
 }

@@ -11,6 +11,5 @@ find_package(Boost REQUIRED COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(exception PRIVATE ${Boost_LIBRARIES})
 
-add_subdirectory(Detours-main)
-target_include_directories(exception PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Detours-main)
-target_link_libraries(exception PRIVATE detours)
+include_directories(${minhook_INCLUDE_DIRS})
+target_link_libraries(exception PRIVATE minhook)

@@ -4,9 +4,11 @@
 #include <utility>
 #include <boost/stacktrace.hpp>
 #include <iostream>
-#include "Detours-main/src/detours.h"
 #include "stacktraced_exception.h"
 
+#include <MinHook.h>
+#include <windows.h>
+#include <TlHelp32.h>
 
 #ifdef __GLIBCXX__
 const char* lib = "libstdc++-6.dll";
@@ -23,12 +25,13 @@ namespace {
     std::unordered_map<void*, const char*> stacktrace_dump_by_exc;
     std::mutex mutex;
 
-    thread_local bool want_stacktracing = false;
+    thread_local bool want_stacktracing = true;
 
     using cxa_allocate_exception_t =  void* (*)(size_t);
     using cxa_free_exception_t = void (*)(void*);
 
     constinit cxa_allocate_exception_t orig_cxa_allocate_exception = nullptr;
+
     constinit cxa_free_exception_t orig_cxa_free_exception = nullptr;
 
     void* allocate_exception_with_stacktrace(size_t thrown_size) throw() {
@@ -76,22 +79,54 @@ namespace {
         already_in_free_exception = false;
     }
 
-
     // init
     auto _ = [] () -> int {
-        orig_cxa_allocate_exception = (cxa_allocate_exception_t)DetourFindFunction(lib, "__cxa_allocate_exception");
-        orig_cxa_free_exception = (cxa_free_exception_t)DetourFindFunction(lib, "__cxa_free_exception");
+        if (auto res = MH_Initialize(); res != MH_OK)
+        {
+            std::cerr << "Could not init hook. Err: " << res;
+            std::terminate();
+        }
 
-        if (!orig_cxa_allocate_exception || !orig_cxa_free_exception) {
+        HMODULE standard_lib = LoadLibrary(lib);
+        if (!standard_lib) {
+            std::cerr << "Could not load library";
+            return 1;
+        }
+
+        // original functions
+        auto orig_cxa_allocate_exception_target = (cxa_allocate_exception_t)GetProcAddress(standard_lib, "__cxa_allocate_exception");
+        auto orig_cxa_free_exception_target = (cxa_free_exception_t)GetProcAddress(standard_lib, "__cxa_free_exception");
+
+        if (!orig_cxa_allocate_exception_target || !orig_cxa_free_exception_target) {
             std::cerr << "Could not find library functions. Terminating";
             std::terminate();
         }
 
-        DetourTransactionBegin();
-        DetourUpdateThread(GetCurrentThread());
-        DetourAttach(&(PVOID&)orig_cxa_allocate_exception, &(PVOID&) allocate_exception_with_stacktrace);
-        DetourAttach(&(PVOID&)orig_cxa_free_exception, &(PVOID&) free_exception_with_stacktrace);
-        DetourTransactionCommit();
+        auto res = MH_CreateHook(reinterpret_cast<LPVOID>(orig_cxa_allocate_exception_target),
+                                   reinterpret_cast<LPVOID>(allocate_exception_with_stacktrace),
+                                   reinterpret_cast<LPVOID*>(&orig_cxa_allocate_exception));
+        if (res != MH_OK) {
+            std::cerr << "Could not create hook for allocate exception. Err: " << res;
+            return 1;
+        }
+        res = MH_EnableHook(reinterpret_cast<LPVOID>(orig_cxa_allocate_exception_target));
+        if (res != MH_OK) {
+            std::cerr << "Could not enable hook for allocate exception. Err: " << res;
+            return 1;
+        }
+        res = MH_CreateHook(reinterpret_cast<LPVOID>(orig_cxa_free_exception_target),
+                                   reinterpret_cast<LPVOID>(free_exception_with_stacktrace),
+                                   reinterpret_cast<LPVOID*>(&orig_cxa_free_exception));
+        if (res != MH_OK) {
+            std::cerr << "Could not create hook for allocate exception. Err: " << res;
+            std::terminate();
+        }
+        res = MH_EnableHook(reinterpret_cast<LPVOID>(orig_cxa_free_exception_target));
+
+        if (res != MH_OK) {
+            std::cerr << "Could not enable hook for free exception. Err: " << res;
+            std::terminate();
+        }
 
         return 1;
     }();

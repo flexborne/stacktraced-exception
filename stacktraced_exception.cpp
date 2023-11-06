@@ -8,7 +8,6 @@
 
 #include <MinHook.h>
 #include <windows.h>
-#include <TlHelp32.h>
 
 #ifdef __GLIBCXX__
 const char* lib = "libstdc++-6.dll";
